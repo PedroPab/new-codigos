@@ -1,28 +1,28 @@
 const express = require('express');
 
-const ProductsService = require('./../services/product.service');
-const validatorHandler = require('./../middlewares/validator.handler');
-const { createProductSchema, updateProductSchema, getProductSchema } = require('./../schemas/product.schema');
+const ReferidosService = require('../services/referidos.service');
+const validatorHandler = require('../middlewares/validator.handler');
+const { createReferidosSchema,  updateReferidosSchema, getReferidosSchema } = require('../schemas/referidos.schema');
 
 const router = express.Router();
-const service = new ProductsService();
+const service = new ReferidosService();
 
 router.get('/', async (req, res, next) => {
   try {
-    const products = await service.find();
-    res.json(products);
+    const referidos = await service.find();
+    res.json(referidos);
   } catch (error) {
     next(error);
   }
 });
 
 router.get('/:id',
-  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(getReferidosSchema, 'params'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const product = await service.findOne(id);
-      res.json(product);
+      const referido = await service.findOne(id);
+      res.json(referido);
     } catch (error) {
       next(error);
     }
@@ -30,12 +30,12 @@ router.get('/:id',
 );
 
 router.post('/',
-  validatorHandler(createProductSchema, 'body'),
+  validatorHandler(createReferidosSchema, 'body'),
   async (req, res, next) => {
     try {
       const body = req.body;
-      const newProduct = await service.create(body);
-      res.status(201).json(newProduct);
+      const newReferido = await service.create(body);
+      res.status(201).json(newReferido);
     } catch (error) {
       next(error);
     }
@@ -43,14 +43,14 @@ router.post('/',
 );
 
 router.patch('/:id',
-  validatorHandler(getProductSchema, 'params'),
-  validatorHandler(updateProductSchema, 'body'),
+  validatorHandler(getReferidosSchema, 'params'),
+  validatorHandler(updateReferidosSchema, 'body'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
       const body = req.body;
-      const product = await service.update(id, body);
-      res.json(product);
+      const referido = await service.update(id, body);
+      res.json(referido);
     } catch (error) {
       next(error);
     }
@@ -58,7 +58,7 @@ router.patch('/:id',
 );
 
 router.delete('/:id',
-  validatorHandler(getProductSchema, 'params'),
+  validatorHandler(getReferidosSchema, 'params'),
   async (req, res, next) => {
     try {
       const { id } = req.params;

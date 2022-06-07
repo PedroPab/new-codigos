@@ -1,28 +1,28 @@
 const express = require('express');
 
-const CategoryService = require('./../services/category.service');
-const validatorHandler = require('./../middlewares/validator.handler');
-const { createCategorySchema, updateCategorySchema, getCategorySchema } = require('./../schemas/category.schema');
+const CodigosService = require('./../services/codigos.service');
+const validatorHandler = require('../middlewares/validator.handler');
+const { createCodigoSchema, updateCodigoSchema, getCodigoSchema } = require('../schemas/codigos.schema');
 
 const router = express.Router();
-const service = new CategoryService();
+const service = new CodigosService();
 
 router.get('/', async (req, res, next) => {
   try {
-    const categories = await service.find();
-    res.json(categories);
+    const codigos  = await service.find();
+    res.json(codigos);
   } catch (error) {
     next(error);
   }
 });
 
 router.get('/:id',
-  validatorHandler(getCategorySchema, 'params'),
+  validatorHandler(getCodigoSchema, 'params'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const category = await service.findOne(id);
-      res.json(category);
+      const codigo = await service.findOne(parseInt(id));
+      res.json(codigo);
     } catch (error) {
       next(error);
     }
@@ -30,12 +30,12 @@ router.get('/:id',
 );
 
 router.post('/',
-  validatorHandler(createCategorySchema, 'body'),
+  validatorHandler(createCodigoSchema, 'body'),
   async (req, res, next) => {
     try {
       const body = req.body;
-      const newCategory = await service.create(body);
-      res.status(201).json(newCategory);
+      const newCodigo = await service.create(body);
+      res.status(201).json(newCodigo);
     } catch (error) {
       next(error);
     }
@@ -43,14 +43,14 @@ router.post('/',
 );
 
 router.patch('/:id',
-  validatorHandler(getCategorySchema, 'params'),
-  validatorHandler(updateCategorySchema, 'body'),
+  validatorHandler(getCodigoSchema, 'params'),
+  validatorHandler(updateCodigoSchema, 'body'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
       const body = req.body;
-      const category = await service.update(id, body);
-      res.json(category);
+      const codigo = await service.update(id, body);
+      res.json(codigo);
     } catch (error) {
       next(error);
     }
@@ -58,7 +58,7 @@ router.patch('/:id',
 );
 
 router.delete('/:id',
-  validatorHandler(getCategorySchema, 'params'),
+  validatorHandler(getCodigoSchema, 'params'),
   async (req, res, next) => {
     try {
       const { id } = req.params;
@@ -71,3 +71,4 @@ router.delete('/:id',
 );
 
 module.exports = router;
+
