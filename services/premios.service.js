@@ -1,11 +1,13 @@
 const faker = require('faker');
 const boom = require('@hapi/boom');
+const pool = require('./../libs/postgres.pool');
 
 class PremiosServices {
 
   constructor(){
     this.premios = [];
-    
+    this.pool = pool
+    this.pool.on('error', (error) => console.error(error))
   }
 
   generate() {
