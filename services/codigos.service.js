@@ -2,6 +2,7 @@ const faker = require('faker');
 const boom = require('@hapi/boom');
 const pool = require('./../libs/postgres.pool');
 const sequelize = require('./../libs/sequelize')
+const { models } = require('./../libs/sequelize')
 
 class codigosService {
 
@@ -36,10 +37,11 @@ class codigosService {
   }
 
   async find() {
-    const query = 'SELECT * FROM task'
-    const [data] = await sequelize.query(query)
-  
-    return data;
+
+    const rta = await models.Codigos.findAll()
+    // const query = 'SELECT * FROM task'
+    // const [data] = await sequelize.query(query)
+    return rta;
   }
 
   async findOne(id) {
