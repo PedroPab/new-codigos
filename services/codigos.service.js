@@ -1,7 +1,7 @@
 const faker = require('faker');
 const boom = require('@hapi/boom');
 const pool = require('./../libs/postgres.pool');
-const sequelize = require('./../libs/sequelize')
+
 const { models } = require('./../libs/sequelize')
 
 class codigosService {
@@ -27,13 +27,8 @@ class codigosService {
   }
 
   async create(data) {
-    const newCodigo = {
-      id: String(Math.trunc(100 * Math.random())),
-      codigoReferencia: faker.datatype.number(),
-      ...data
-    }
-    this.codigos.push(newCodigo);
-    return newCodigo;
+    const newCodigo = await models.Codigos.create(data)
+    return newCodigo
   }
 
   async find() {
@@ -45,36 +40,25 @@ class codigosService {
   }
 
   async findOne(id) {
-    const codigos = this.codigos.find(item => item.id === id);
-    if (!codigos) {
+    const codigo = await models.Codigos.findByPk(id)
+    if (!codigo) {
       throw boom.notFound('codigos not found');
     }
-    if (codigos.isBlock) {
-      throw boom.conflict('codigos is block');
-    }
-    return codigos;
+    
+    return codigo;
   }
 
   async update(id, changes) {
-    const index = this.codigos.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('codigos not found');
-    }
-    const codigos = this.codigos[index];
-    this.codigos[index] = {
-      ...codigos,
-      ...changes
-    };
-    return this.codigos[index];
+
+    const codigo = await this.findOne(id)
+    const rta = await codigo.update(changes)
+    return rta
   }
 
   async delete(id) {
-    const index = this.codigos.findIndex(item => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('codigos not found');
-    }
-    this.codigos.splice(index, 1);
-    return { id };
+    const codigo = await this.findOne(id)
+    await codigo.destroy()
+    return {"codigo deletet id": id}
   }
 
 }
