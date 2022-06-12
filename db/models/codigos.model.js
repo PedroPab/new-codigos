@@ -28,12 +28,17 @@ const CodigosShema = {
         unique: true,
     },
     codigo: {
-        allowNull: true,
+        allowNull: false,
         //autoIncrement:true,
         type: DataTypes.INTEGER,
         unique: true,
         // defaultValue:    
     },
+    active: {
+        allowNull: false,
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+    }
         // createdAt: {
         //     allowNull: false,
         //     type: DataTypes.DATE,

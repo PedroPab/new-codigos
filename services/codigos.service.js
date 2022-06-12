@@ -43,13 +43,17 @@ class codigosService {
   async find() {
 
     const rta = await models.Codigos.findAll()
-    return rta;
+    const rta2 = rta.filter(item => item.active == true)
+    return rta2;
   }
 
   async findOne(id) {
     const codigo = await models.Codigos.findByPk(id)
     if (!codigo) {
       throw boom.notFound('codigos not found');
+    }
+    if(!codigo.active){
+      return boom.conflict('el codigo esta desactivado')
     }
     
     return codigo;
@@ -58,13 +62,22 @@ class codigosService {
   async update(id, changes) {
 
     const codigo = await this.findOne(id)
+    const lista = await this.find()
+    if(lista.map(item => item.codigo).includes(changes.codigo)){
+      return boom.conflict('el codigo ya esta en uso ')
+    }
+    if(lista.map(item => item.telephone).includes(changes.telephone)){
+      return boom.conflict('el telephone ya esta en uso ')
+    
+    }
     const rta = await codigo.update(changes)
     return rta
   }
 
   async delete(id) {
     const codigo = await this.findOne(id)
-    await codigo.destroy()
+    codigo.active = false
+    await codigo.save()
     return {"codigo deletet id": id}
   }
 
