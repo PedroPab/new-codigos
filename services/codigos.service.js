@@ -1,4 +1,3 @@
-const faker = require('faker');
 const boom = require('@hapi/boom');
 const pool = require('./../libs/postgres.pool');
 
@@ -13,29 +12,37 @@ class codigosService {
     
   }
 
-  generate() {
-    const limit = 100;
-    for (let index = 0; index < limit; index++) {
-      this.codigos.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.codigosName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
-        isBlock: faker.datatype.boolean(),
-      });
+  
+  comprobarLista(comprobante, lista){//mira si en la lista esta el comprobante y 
+    //si si nos devolvera un numero que se pueda
+    const include = lista.includes(comprobante)
+    if(include){
+      for(let i = 1; i <= lista.length ; i ++){
+        if(!lista.includes(i)){
+          return i
+        }
+      }
+      return Math.max(...lista) + 1
     }
+    return comprobante
   }
 
   async create(data) {
+    const lista = await this.find()
+    
+    const listaId =  await this.comprobarLista(data.id, lista.map(item => item.id))
+    data.id = listaId
+    
+    const listaCodigo = await this.comprobarLista(data.codigo, lista.map(item => item.codigo))
+    data.codigo = listaCodigo
+    
     const newCodigo = await models.Codigos.create(data)
-    return newCodigo
+    return  newCodigo
   }
 
   async find() {
 
     const rta = await models.Codigos.findAll()
-    // const query = 'SELECT * FROM task'
-    // const [data] = await sequelize.query(query)
     return rta;
   }
 

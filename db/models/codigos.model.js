@@ -30,7 +30,7 @@ const CodigosShema = {
     codigo: {
         allowNull: true,
         //autoIncrement:true,
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         unique: true,
         // defaultValue:    
     },
