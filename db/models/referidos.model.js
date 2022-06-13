@@ -34,12 +34,6 @@ const CodigosShema = {
         unique: true,
         // defaultValue:    
     },
-    premioPendiente:{
-        field: 'premio_pendiente',
-        allowNull: false,
-        type: DataTypes.BOOLEAN,
-        defaultValue: false,
-    },
     active: {
         allowNull: false,
         type: DataTypes.BOOLEAN,

@@ -1,18 +1,20 @@
 const Joi = require('joi');
 
-const id = Joi.string()
-const codigoReferencia = Joi.string()
+const id = Joi.number().integer()
+const codigoReferencia = Joi.number().integer()
 const name = Joi.string().min(3);
 const lastName = Joi.string().min(3)
-const telephone = Joi.string().min(9).max(13);
+const telephone = Joi.string().min(1).max(40)
+const active = Joi.boolean()
 
 
 const createReferidosSchema = Joi.object({
-  //codigoReferencia: codigoReferencia.required(),
-  //id: id.required(),
+  codigoReferencia: codigoReferencia.required(),
+    // id: id.required(),
   name: name.required(),
   lastName: lastName.required(),
   telephone: telephone.required(),
+  active: active,
 });
 
 const updateReferidosSchema = Joi.object({
@@ -20,6 +22,7 @@ const updateReferidosSchema = Joi.object({
   name: name,
   lastName: lastName,
   telephone: telephone,
+  active: active,
 });
 
 const getReferidosSchema = Joi.object({
