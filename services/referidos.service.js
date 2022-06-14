@@ -6,7 +6,7 @@ class ReferidosService {
   constructor() {
     this.referidos = [];
     this.pool = pool
-    this.pool.on('error', (error) => pool.error(error))
+    this.pool.on('error', (error) => boom.error(error))
   }
 
   async create(data) {
@@ -39,14 +39,7 @@ class ReferidosService {
         WHERE codigo = ${data.codigoReferencia}
       ;
     `
-    const haj = `
-    CREATE SEQUENCE IF NOT EXISTS table_premios_${data.codigoReferencia}_seq;
-    CREATE TABLE IF NOT EXISTS premios_${data.codigoReferencia} (
-    id int  not null DEFAULT NEXTVAL('table_premio_${data.codigoReferencia}_seq'::regclass),
-    notas varchar(255),
-    create_at timestamp not null default CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-    );`
+    
 
     const newTabla = await pool.query(queryTable)
     const newInsert = await pool.query(insert)
@@ -54,9 +47,10 @@ class ReferidosService {
 
     if (select.rowCount % 3 === 0) {
       const lala = await pool.query(queryPremio)
+      return [newInsert.command + ' a la tabal' , 'ya se merece un premio'  ]
     }
 
-    return newTabla.command, newInsert.command;
+    return [newTabla[0].command + ' new table',  newInsert.command + ' a la tabal' ,select.rowCount]
   }
 
   async find() {

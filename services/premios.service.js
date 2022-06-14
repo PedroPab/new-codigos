@@ -1,35 +1,51 @@
-const faker = require('faker');
 const boom = require('@hapi/boom');
 const pool = require('./../libs/postgres.pool');
 
 class PremiosServices {
 
-  constructor(){
+  constructor() {
     this.premios = [];
     this.pool = pool
-    this.pool.on('error', (error) => console.error(error))
-  }
-
-  generate() {
-    const limit = 100;
-    for (let index = 0; index < limit; index++) {
-      this.premios.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.premioName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
-        isBlock: faker.datatype.boolean(),
-      });
-    }
+    this.pool.on('error', (error) => boom.error(error))
   }
 
   async create(data) {
-    const newPremio = {
-      id: String(Math.trunc(100 * Math.random())),
-      ...data
+
+    const referidos = `
+      SELECT * FROM referidos_${data.codigoReferencia}
+    `
+    const premios = `
+    SELECT * FROM premios_${data.codigoReferencia}
+  `
+    
+    const query = `
+    CREATE SEQUENCE IF NOT EXISTS table_premios_${data.codigoReferencia}_seq;
+    CREATE TABLE IF NOT EXISTS premios_${data.codigoReferencia} (
+    id int  not null DEFAULT NEXTVAL('table_premios_${data.codigoReferencia}_seq'::regclass),
+    notas varchar(255),
+    create_at timestamp not null default CURRENT_TIMESTAMP,
+    PRIMARY KEY (id)
+    );`
+
+    const newTabla = await pool.query(query)
+
+    const selectPremio = await pool.query(premios)
+    const selectReferidos = await pool.query(referidos)
+    
+    if ( Math.round(selectReferidos.rowCount / 3) <=  selectPremio.rowCount) {
+      
+      return boom.conflict('no tiene los suficiente referidos')
     }
-    this.premios.push(newPremio);
-    return newPremio;
+
+    const insert = `
+    INSERT INTO  premios_${data.codigoReferencia}(notas)
+    VALUES( '${data.notas}');
+  `
+    
+    const newInsert = await pool.query(insert)
+
+    return newInsert.command
+
   }
 
   find() {
@@ -37,14 +53,15 @@ class PremiosServices {
   }
 
   async findOne(id) {
-    const premio = this.premios.find(item => item.id === id);
-    if (!premio) {
-      throw boom.notFound('premio not found');
+    const query = `SELECT * FROM public.premios_${id}
+      ORDER BY id ASC ; `
+
+    const select = await pool.query(query)
+
+    if (!select) {
+      throw boom.notFound('product not found');
     }
-    if (premio.isBlock) {
-      throw boom.conflict('premio is block');
-    }
-    return premio;
+    return select.rows;
   }
 
   async update(id, changes) {

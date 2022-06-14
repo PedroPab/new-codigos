@@ -1,17 +1,17 @@
 const Joi = require('joi');
 
 const id = Joi.string()
-const idReferido = Joi.string()
-const nota = Joi.string().max(250)
+const codigoReferencia = Joi.number().integer()
+const notas = Joi.string().max(250)
+
 
 const createPremiosSchema = Joi.object({
-  idReferido: idReferido.required(),
-  nota: nota,
+  codigoReferencia: codigoReferencia.required(),
+  notas: notas,
 });
 
 const updatePremiosSchema = Joi.object({
-  idReferido: idReferido,
-  nota: nota,
+  notas: notas,
 });
 
 const getPremiosSchema = Joi.object({
