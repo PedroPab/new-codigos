@@ -41,11 +41,9 @@ class codigosService {
   }
 
   async find() {
-
     const rta = await models.Codigos.findAll()
-    const rta2 = rta.filter(item => item.active == true)
-    return rta2;
-  }
+    return rta 
+   }
 
   async findOne(id) {
     const codigo = await models.Codigos.findByPk(id)

@@ -44,6 +44,22 @@ class PremiosServices {
     
     const newInsert = await pool.query(insert)
 
+    const queryPremio = `
+      UPDATE codigos
+        SET premio_pendiente = false
+        WHERE codigo = ${data.codigoReferencia}
+      ;
+    `
+    const selectPremio2 = await pool.query(premios)
+
+    if (Math.round(selectReferidos.rowCount / 3) == selectPremio2.rowCount) {
+      console.log(Math.round(selectReferidos.rowCount / 3), selectPremio2.rowCount)
+      const codigoUpdate = await pool.query(queryPremio)
+      console.log(Math.round(selectReferidos.rowCount / 3), selectPremio2.rowCount)
+
+      
+    }
+
     return newInsert.command
 
   }

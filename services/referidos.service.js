@@ -46,7 +46,7 @@ class ReferidosService {
     const select = await pool.query(premio)
 
     if (select.rowCount % 3 === 0) {
-      const lala = await pool.query(queryPremio)
+      await pool.query(queryPremio)
       return [newInsert.command + ' a la tabal' , 'ya se merece un premio'  ]
     }
 
@@ -54,9 +54,19 @@ class ReferidosService {
   }
 
   async find() {
+    const query =  "select * from information_schema.tables where table_schema='public';" 
+    
+    const tablas = await pool.query(query)
 
+    const tablas_referidos = tablas.rows.filter(element => element.table_name.includes('referidos_'))
 
-    return 0
+    let rta = []
+    for (let i = 0; i < tablas_referidos.length; i++) {
+      const element = tablas_referidos[i];
+       rta.push(await this.findOne(element.table_name.replace('referidos_', '')))
+      
+    }
+     return  rta 
   }
 
   async findOne(id) {
