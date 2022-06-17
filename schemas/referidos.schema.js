@@ -12,7 +12,7 @@ const createReferidosSchema = Joi.object({
   codigoReferencia: codigoReferencia.required(),
     // id: id.required(),
   name: name.required(),
-  lastName: lastName.required(),
+  lastName: lastName,
   telephone: telephone.required(),
   active: active,
 });
