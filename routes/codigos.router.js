@@ -21,7 +21,7 @@ router.get('/:id',
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const codigo = await service.findOne(parseInt(id));
+      const codigo = await service.findOneCodigo(parseInt(id));
       res.json(codigo);
     } catch (error) {
       next(error);
