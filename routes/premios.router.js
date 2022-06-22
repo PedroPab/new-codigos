@@ -35,7 +35,12 @@ router.post('/',
     try {
       const body = req.body;
       const newProduct = await service.create(body);
-      res.status(201).json(newProduct);
+      if (typeof(newProduct) == 'string' && newProduct.includes("INSERT")) {
+        res.status(201).json(newProduct);
+      }else{
+        res.status(409).json(newProduct);
+      }
+      
     } catch (error) {
       next(error);
     }
