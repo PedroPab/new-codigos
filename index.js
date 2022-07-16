@@ -9,7 +9,7 @@ const port = process.env.PORT || 3000;
 
 app.use(express.json());
 
-const whitelist = ['http://localhost:8080', 'https://myapp.co'];
+const whitelist = ['http://localhost:8080', 'https://myapp.co' , '192.168.1.4'];
 const options = {
   origin: (origin, callback) => {
     if (whitelist.includes(origin) || !origin) {
@@ -22,12 +22,20 @@ const options = {
 app.use(cors(options));
 
 app.get('/', (req, res) => {
-  res.send('Hola mi server en express');
+  res.location('home.html');
 });
 
 app.get('/nueva-ruta', (req, res) => {
   res.send('Hola, soy una nueva ruta');
 });
+    // app.get('/mensage', (req, res) => {
+    //   const res1 = await fetch('http://worldtimeapi.org/api//timezone/America/Bogota/')
+    //   const data1 = await res1.json()
+    //   if(res1.status == 200){
+    //     const hora = data1.datetime
+    //     cosnt hora_modi
+    //   }
+    // });
 
 routerApi(app);
 
